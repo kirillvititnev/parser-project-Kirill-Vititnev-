@@ -10,15 +10,15 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 
 import sqlite3
-
+#starting WebDriver 
+service = Service(executable_path=r'/opt/homebrew/bin/chromedriver')
+options = webdriver.ChromeOptions()
+options.add_argument("--headless")
+driver = webdriver.Chrome(service=service, options=options)
+links = open("links.txt", 'r')
 def get_links_from_category(category_url, filename, num_of_pages):
-    service = Service(executable_path=r'/opt/homebrew/bin/chromedriver')
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    driver = webdriver.Chrome(service=service, options=options)
 
     links = open("links.txt", 'w')
-
     if not category_url:
         return
     driver.get(category_url)
@@ -38,10 +38,7 @@ def get_links_from_category(category_url, filename, num_of_pages):
         for link in links_on_page:
             links.write(link.get_attribute('href')+'\n')
         driver.get(next_page_button.get_attribute('href'))
-        
-
     links.close()
-    driver.close()
 
 
 def output_sql_table(cursor):
@@ -66,12 +63,7 @@ def insert_varible_into_table(cursor, brand, product_name, color, price, currnec
         print("Ошибка при работе с SQLite", error)
 
 
-#starting WebDriver 
-service = Service(executable_path=r'/opt/homebrew/bin/chromedriver')
-options = webdriver.ChromeOptions()
-options.add_argument("--headless")
-driver = webdriver.Chrome(service=service, options=options)
-links = open("links.txt", 'r')
+
 
 
 try:
@@ -102,10 +94,7 @@ num_pages = int(input())
 get_links_from_category(category_url, "links.txt", num_pages)
 
 
-while True:
-    url = links.readline()
-    if not url:
-        break
+for url in links:
     driver.get(url)
     WebDriverWait(driver, 10).until(lambda x: x.find_element(By.CLASS_NAME, "product-page__header"))
     title=driver.find_element(By.CLASS_NAME,'product-page__header' ).text
@@ -126,17 +115,10 @@ while True:
     if (price != 0 ) and (price[-1] == '₽'):
         price = price[0:-2]
         currency = 'RUB'
-
-
-    #print(title)
-    #if len(sold_out) != 0:
-        #print("SOLD-OUT")
-    #else:
-        #print(price)
-    #print(article)
-    #[print(i.text)for i in color]
-    #print(rating)
-    brand, title = title.split("\n")
+    if title.find('\n')!= -1:
+        brand, title = title.split("\n")
+    else:
+        brand = ''
     insert_varible_into_table(cursor, brand, title, colors_string, price, currency, in_stock, rating) 
 
 output_sql_table(cursor)
