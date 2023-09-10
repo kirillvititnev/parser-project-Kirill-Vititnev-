@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.wait import WebDriverWait 
 from selenium.webdriver.common.action_chains import ActionChains
-
+from selenium.common.exceptions import TimeoutException
 import sqlite3
 #starting WebDriver 
 service = Service(executable_path=r'/opt/homebrew/bin/chromedriver')
@@ -16,6 +16,8 @@ options = webdriver.ChromeOptions()
 options.add_argument("--headless")
 driver = webdriver.Chrome(service=service, options=options)
 links = open("links.txt", 'r')
+
+
 def get_links_from_category(category_url, filename, num_of_pages):
 
     links = open("links.txt", 'w')
@@ -25,27 +27,30 @@ def get_links_from_category(category_url, filename, num_of_pages):
 
     for i in range(num_of_pages):
         time.sleep(1)
-        WebDriverWait(driver, 10).until(lambda x: x.find_element(By.CLASS_NAME, "pagination-next"))
-        next_page_button = driver.find_element(By.CLASS_NAME, "pagination-next")
-        speed = 8
-        current_scroll_position, new_height= 0, 1
-        while current_scroll_position <= new_height:
-            current_scroll_position += speed
-            driver.execute_script("window.scrollTo(0, {});".format(current_scroll_position))
-            new_height = driver.execute_script("return document.body.scrollHeight")
+        try:
+            WebDriverWait(driver, 25).until(lambda x: x.find_element(By.CLASS_NAME, "pagination-next"))
+        
+            next_page_button = driver.find_element(By.CLASS_NAME, "pagination-next")
+            speed = 8
+            current_scroll_position, new_height= 0, 1
+            while current_scroll_position <= new_height:
+                current_scroll_position += speed
+                driver.execute_script("window.scrollTo(0, {});".format(current_scroll_position))
+                new_height = driver.execute_script("return document.body.scrollHeight")
 
-        links_on_page = driver.find_elements(By.CLASS_NAME, 'product-card__link')
-        for link in links_on_page:
-            links.write(link.get_attribute('href')+'\n')
-        driver.get(next_page_button.get_attribute('href'))
+            links_on_page = driver.find_elements(By.CLASS_NAME, 'product-card__link')
+            for link in links_on_page:
+                links.write(link.get_attribute('href')+'\n')
+            driver.get(next_page_button.get_attribute('href'))
+            print("Current page number: "+str(i+1)+'\n')
+        except TimeoutException:
+
+            print("Превышено время ожидания загрузки страницы, выход", TimeoutException)
+            break
     links.close()
 
 
-def output_sql_table(cursor):
-    print("Текущее содержимое таблицы products")
-    data = cursor.execute("SELECT * FROM products")
-    for row in data:
-        print(row)
+
 
 def insert_varible_into_table(cursor, brand, product_name, color, price, currnecy, in_stock, rating):
     try:
@@ -121,7 +126,8 @@ for url in links:
         brand = ''
     insert_varible_into_table(cursor, brand, title, colors_string, price, currency, in_stock, rating) 
 
-output_sql_table(cursor)
+output_sql_table(cursor, 'output.txt')
+
 if (sqlite_connection):
     print("Всего строк, измененных после подключения к базе данных: ", sqlite_connection.total_changes)
     sqlite_connection.close()
