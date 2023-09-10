@@ -1,5 +1,6 @@
 # parser-project-Kirill-Vititnev-
 wildberries parser
+
 Для запуска необходима установка chromdriver
 
 parserWB.py:
