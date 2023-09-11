@@ -11,7 +11,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
 import sqlite3
 #starting WebDriver 
-service = Service(executable_path=r'/opt/homebrew/bin/chromedriver')
+chromedriver_path = '/opt/homebrew/bin/chromedriver'
+service = Service(executable_path=r+chromedriver_path)
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
 driver = webdriver.Chrome(service=service, options=options)
