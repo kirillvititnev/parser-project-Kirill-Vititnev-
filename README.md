@@ -13,4 +13,4 @@ parserWB.py:
 4) Создает базу данных SQlite products.db  с таблицей products формата: (brand, product_name, color, price, currency, in_stock, rating)
 5) Добавляет каждый товар из links.txt в products.db
 
-Для просмотра содержимого products.db запустите output_to_txt.py (содержимое таблицы products попадет в файл output.txt
+Для просмотра содержимого products.db запустите output_to_txt.py (содержимое таблицы products попадет в файл output.txt)
