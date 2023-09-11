@@ -12,11 +12,11 @@ from selenium.common.exceptions import TimeoutException
 import sqlite3
 #starting WebDriver 
 chromedriver_path = '/opt/homebrew/bin/chromedriver'
-service = Service(executable_path=r+chromedriver_path)
+service = Service(executable_path=chromedriver_path)
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
 driver = webdriver.Chrome(service=service, options=options)
-links = open("links.txt", 'r')
+
 
 
 def get_links_from_category(category_url, filename, num_of_pages):
@@ -99,7 +99,7 @@ print("Отправьте количество страниц из катего�
 num_pages = int(input())
 get_links_from_category(category_url, "links.txt", num_pages)
 
-
+links = open("links.txt", 'r')
 for url in links:
     driver.get(url)
     WebDriverWait(driver, 10).until(lambda x: x.find_element(By.CLASS_NAME, "product-page__header"))
@@ -128,7 +128,7 @@ for url in links:
     insert_varible_into_table(cursor, brand, title, colors_string, price, currency, in_stock, rating) 
 
 
-
+links.close()
 if (sqlite_connection):
     print("Всего строк, измененных после подключения к базе данных: ", sqlite_connection.total_changes)
     sqlite_connection.close()
