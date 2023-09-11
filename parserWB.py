@@ -11,7 +11,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
 import sqlite3
 #starting WebDriver 
-chromedriver_path = '/opt/homebrew/bin/chromedriver'
+print("Введите путь к  chromedriver (например /opt/homebrew/bin/chromedriver)")
+
+chromedriver_path = input()
 service = Service(executable_path=chromedriver_path)
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
@@ -21,7 +23,7 @@ driver = webdriver.Chrome(service=service, options=options)
 
 def get_links_from_category(category_url, filename, num_of_pages):
 
-    links = open("links.txt", 'w')
+    links = open(filename, 'w')
     if not category_url:
         return
     driver.get(category_url)
