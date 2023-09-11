@@ -2,7 +2,8 @@
 wildberries parser
 
 Для запуска необходима установка chromedriver v114:
-https://chromedriver.chromium.org/downloads \n
+https://chromedriver.chromium.org/downloads 
+
 В строке 14 файла parserWB.py укажите путь к скачанному chromedriver
 
 parserWB.py:
