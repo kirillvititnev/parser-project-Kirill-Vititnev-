@@ -126,7 +126,7 @@ for url in links:
         brand = ''
     insert_varible_into_table(cursor, brand, title, colors_string, price, currency, in_stock, rating) 
 
-output_sql_table(cursor, 'output.txt')
+
 
 if (sqlite_connection):
     print("Всего строк, измененных после подключения к базе данных: ", sqlite_connection.total_changes)
