@@ -1,7 +1,9 @@
 # parser-project-Kirill-Vititnev-
 wildberries parser
 
-Для запуска необходима установка chromdriver
+Для запуска необходима установка chromedriver v114:
+https://chromedriver.chromium.org/downloads 
+В строке 14 файла parserWB.py укажите путь к скачанному chromedriver
 
 parserWB.py:
 1) Получает на вход категорию(url) и необходимое количество страниц для считывания
